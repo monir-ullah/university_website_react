@@ -6,8 +6,6 @@ import ScrollToTop from "./component/layout/ScrollToTop";
 import ErrorPage from "./page/404";
 import AboutPage from "./page/about";
 import BlogPage from "./page/blog";
-import BlogPageTwo from "./page/blog-2";
-import BlogPageThree from "./page/blog-3";
 import BlogSingle from "./page/blog-single";
 import CartPage from "./page/cart-page";
 import ContactPage from "./page/contact";
@@ -36,8 +34,6 @@ function App() {
         <Route path="course-single" element={<CourseSingle />} />
         <Route path="course-view" element={<CourseView />} />
         <Route path="blog" element={<BlogPage />} />
-        <Route path="blog-2" element={<BlogPageTwo />} />
-        <Route path="blog-3" element={<BlogPageThree />} />
         <Route path="blog-single" element={<BlogSingle />} />
         <Route path="about" element={<AboutPage />} />
         <Route path="team" element={<TeamPage />} />

@@ -1,20 +1,19 @@
 import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import Footer from "../component/layout/footer";
-import Header from "../component/layout/header";
 import PageHeader from "../component/layout/pageheader";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUser, clearUser } from "../redux/slices/userSlice";
 import toast from "react-hot-toast";
 import { API_BASE_URL } from "../utils/utils";
 import axios from "axios";
+import HeaderTwo from "../component/layout/header-2";
 
 const title = "Login";
 
 const btnText = "Submit Now";
 
 const LoginPage = () => {
-  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const login = async (event) => {
@@ -23,19 +22,20 @@ const LoginPage = () => {
     const formData = new FormData(form); // Extract data
     const data = Object.fromEntries(formData); // Convert to an object
 
-    console.log(data); // This will show the form data as an object
+    // This will show the form data as an object
 
     try {
       // Send the data directly (no nested 'data' object)
       const response = await axios.post(`${API_BASE_URL}/login_user`, data);
 
-      console.log("Response:", response.data);
-
+      const { user, token } = response.data;
       // Dispatch user info if login is successful
       dispatch(
         setUser({
-          username: response.data.user.username,
-          email: response.data.user.email,
+          username: user.username,
+          email: user.email,
+          user_id: user.user_id,
+          token,
         })
       );
 
@@ -46,13 +46,9 @@ const LoginPage = () => {
     }
   };
 
-  const logout = () => {
-    dispatch(clearUser());
-  };
-
   return (
     <Fragment>
-      <Header />
+      <HeaderTwo />
       <PageHeader title={"Login Page"} curPage={"Login"} />
       <div className="login-section padding-tb section-bg">
         <div className="container">

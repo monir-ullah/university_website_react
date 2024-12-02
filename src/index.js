@@ -10,23 +10,27 @@ import "././assets/css/icofont.min.css";
 import "././assets/css/animate.css";
 import "././assets/css/style.min.css";
 import { Provider } from "react-redux";
-import store from "./redux/store";
+
 import { Toaster } from "react-hot-toast";
+import { persistor, store } from "./redux/store";
+import { PersistGate } from "redux-persist/integration/react";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
       <div>
-        <Toaster
-          position="bottom-right"
-          toastOptions={{
-            style: {
-              padding: "20px",
-            },
-          }}
-        />
-        <App />
+        <PersistGate loading={null} persistor={persistor}>
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              style: {
+                padding: "20px",
+              },
+            }}
+          />
+          <App />
+        </PersistGate>
       </div>
     </Provider>
     ,

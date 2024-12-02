@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import SelectCatagory from "../sidebar/selectCatagory";
+import { useDispatch, useSelector } from "react-redux";
+import { clearUser } from "../../redux/slices/userSlice";
 
 const HeaderTwo = () => {
   const [menuToggle, setMenuToggle] = useState(false);
   const [headerFiexd, setHeaderFiexd] = useState(false);
+  const dispatch = useDispatch();
+
+  const user = useSelector((state) => state.user);
+
+  const logout = () => {
+    dispatch(clearUser());
+  };
 
   window.addEventListener("scroll", () => {
     if (window.scrollY > 200) {
@@ -46,24 +54,6 @@ const HeaderTwo = () => {
                   <ul className="lab-ul dropdown-menu">
                     <li>
                       <NavLink to="/">Home One</NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/index-2">Home Two</NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/index-3">Home Three</NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/index-4">Home Four</NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/index-5">Home Five</NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/index-6">Home Six</NavLink>
-                    </li>
-                    <li>
-                      <NavLink to="/index-7">Home Seven</NavLink>
                     </li>
                   </ul>
                 </li>
@@ -163,9 +153,15 @@ const HeaderTwo = () => {
               </ul>
             </div>
 
-            <Link to="/login" className="login">
-              <i className="icofont-user"></i> <span>LOG IN</span>{" "}
-            </Link>
+            {user.isLoggedIn ? (
+              <Link to="/login" className="login">
+                <i className="icofont-user"></i> <span>LOG OUT</span>
+              </Link>
+            ) : (
+              <Link to="/login" className="login" onClick={logout}>
+                <i className="icofont-user"></i> <span>LOG IN</span>
+              </Link>
+            )}
             <Link to="/signup" className="signup">
               <i className="icofont-users"></i> <span>SIGN UP</span>{" "}
             </Link>

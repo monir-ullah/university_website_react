@@ -9,13 +9,15 @@ const userSlice = createSlice({
   },
   reducers: {
     setUser(state, action) {
-      state.username = action.payload.username;
-      state.email = action.payload.email;
-      state.isLoggedIn = true;
+      const { username, email, token } = action.payload;
+      state.username = username;
+      state.email = email;
+      state.token = token;
     },
     clearUser(state) {
       state.username = "";
       state.email = "";
+      state.token = "";
       state.isLoggedIn = false;
     },
   },
