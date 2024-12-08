@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { clearUser } from "../../redux/slices/userSlice";
@@ -8,10 +8,17 @@ const HeaderTwo = () => {
   const [headerFiexd, setHeaderFiexd] = useState(false);
   const dispatch = useDispatch();
 
-  const user = useSelector((state) => state.user);
+  const userReduxState = useSelector((state) => state.user);
+
+  const [user, setLoginUser] = useState({});
+
+  useEffect(() => {
+    setLoginUser(userReduxState);
+  }, [user]);
 
   const logout = () => {
     dispatch(clearUser());
+    setLoginUser({});
   };
 
   window.addEventListener("scroll", () => {
@@ -154,11 +161,11 @@ const HeaderTwo = () => {
             </div>
 
             {user.isLoggedIn ? (
-              <Link to="/login" className="login">
+              <Link to="/login" className="login" onClick={logout}>
                 <i className="icofont-user"></i> <span>LOG OUT</span>
               </Link>
             ) : (
-              <Link to="/login" className="login" onClick={logout}>
+              <Link to="/login" className="login">
                 <i className="icofont-user"></i> <span>LOG IN</span>
               </Link>
             )}

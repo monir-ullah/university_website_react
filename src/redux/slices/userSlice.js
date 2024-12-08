@@ -13,6 +13,7 @@ const userSlice = createSlice({
       state.username = username;
       state.email = email;
       state.token = token;
+      state.isLoggedIn = true;
     },
     clearUser(state) {
       state.username = "";

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Footer from "../component/layout/footer";
 import PageHeader from "../component/layout/pageheader";
 import { useDispatch } from "react-redux";
-import { setUser, clearUser } from "../redux/slices/userSlice";
+import { setUser } from "../redux/slices/userSlice";
 import toast from "react-hot-toast";
 import { API_BASE_URL } from "../utils/utils";
 import axios from "axios";
@@ -41,6 +41,10 @@ const LoginPage = () => {
 
       // Show success toast
       toast.success("Login Successful!");
+
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 900);
     } catch (error) {
       toast.error(error.response ? error.response.data.message : error.message);
     }

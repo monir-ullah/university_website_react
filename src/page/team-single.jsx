@@ -1,10 +1,13 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import Footer from "../component/layout/footer";
 import PageHeader from "../component/layout/pageheader";
 import Progress from "../component/sidebar/progress";
 import Rating from "../component/sidebar/rating";
 import HeaderTwo from "../component/layout/header-2";
+import { useLocation, useParams } from "react-router-dom";
+import axios from "axios";
+import { API_BASE_URL } from "../utils/utils";
 
 const name = "Emilee Logan";
 const degi = "Master of Education Degree";
@@ -106,79 +109,127 @@ const awardList = [
 ];
 
 const TeamSingle = () => {
+  const location = useLocation(); // Get the current location object
+  const params = new URLSearchParams(location.search); // Parse query parameters
+
+  const authorId =
+    typeof params.get("authorId") === "number" ? params.get("authorId") : 4; // Get the 'name' query parameter
+
+  console.log(authorId);
+
+  const [author, setAuthor] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchAuthor = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          `${API_BASE_URL}/authors/get_single_author/${authorId}`
+        );
+        setAuthor(response.data.data); // Assuming 'data' is inside 'data' in the response
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to fetch author data.");
+        setLoading(false);
+      }
+    };
+
+    fetchAuthor();
+  }, [authorId]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  console.log(author);
+
   return (
     <Fragment>
       <HeaderTwo />
-      <PageHeader title={"Sir Emilee Logan"} curPage={"Emilee Logan"} />
+      <PageHeader
+        title={author ? author.name : "Not Found!"}
+        curPage={author ? author.name : "Not Found!"}
+      />
       <section className="instructor-single-section padding-tb section-bg">
         <div className="container">
-          <div className="instructor-wrapper">
-            <div className="instructor-single-top">
-              <div className="instructor-single-item d-flex flex-wrap justify-content-between">
-                <div className="instructor-single-thumb">
-                  <img
-                    src="assets/images/instructor/single/01.jpg"
-                    alt="instructor"
-                  />
-                </div>
-                <div className="instructor-single-content">
-                  <h4 className="title">{name}</h4>
-                  <p className="ins-dege">{degi}</p>
-                  <Rating />
-                  <p className="ins-desc">{desc}</p>
-                  <h6 className="subtitle">{subTitle}</h6>
-                  <p className="ins-desc">{infoDetails}</p>
-                  <ul className="lab-ul">
-                    {memInfoLisst.map((val, i) => (
-                      <li
-                        className="d-flex flex-wrap justify-content-start"
-                        key={i}
-                      >
-                        <span className="list-name">{val.leftText}</span>
-                        <span className="list-attr">{val.rightText}</span>
+          {author ? (
+            <div className="instructor-wrapper">
+              <div className="instructor-single-top">
+                <div className="instructor-single-item d-flex flex-wrap justify-content-between">
+                  <div className="instructor-single-thumb">
+                    <img
+                      src={`${author.image_url}`}
+                      // src="assets/images/instructor/single/01.jpg"
+                      alt="instructor"
+                    />
+                  </div>
+                  <div className="instructor-single-content">
+                    <h4 className="title">{author.name}</h4>
+                    <p className="ins-dege">{author.designation}</p>
+                    <Rating review={author.review} />
+                    <p className="ins-desc">{author.description}</p>
+                    <h6 className="subtitle">{subTitle}</h6>
+                    <p className="ins-desc">{infoDetails}</p>
+                    <ul className="lab-ul">
+                      {memInfoLisst.map((val, i) => (
+                        <li
+                          className="d-flex flex-wrap justify-content-start"
+                          key={i}
+                        >
+                          <span className="list-name">{val.leftText}</span>
+                          <span className="list-attr">{val.rightText}</span>
+                        </li>
+                      ))}
+                      <li className="d-flex flex-wrap justify-content-start">
+                        <span className="list-name">Follow Us</span>
+                        <ul className="lab-ul list-attr d-flex flex-wrap justify-content-start">
+                          {memSocialList.map((val, i) => (
+                            <li key={i}>
+                              <a className={val.className} href={val.siteLink}>
+                                <i className={val.iconName}></i>
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
                       </li>
-                    ))}
-                    <li className="d-flex flex-wrap justify-content-start">
-                      <span className="list-name">Follow Us</span>
-                      <ul className="lab-ul list-attr d-flex flex-wrap justify-content-start">
-                        {memSocialList.map((val, i) => (
-                          <li key={i}>
-                            <a className={val.className} href={val.siteLink}>
-                              <i className={val.iconName}></i>
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </li>
-                  </ul>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="instructor-single-bottom d-flex flex-wrap mt-4">
+                <div className="col-xl-6 pb-5 pb-xl-0 d-flex flex-wrap justify-content-lg-start justify-content-between">
+                  <h4 className="subtitle">{skillTitle}</h4>
+                  {skillList.map((val, i) => (
+                    <div className="text-center skill-item" key={i}>
+                      <div className="skill-thumb">
+                        <Progress strokeWidth={8} percentage={val.percentage} />
+                      </div>
+                      <p>{val.text}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="col-xl-6 d-flex flex-wrap justify-content-lg-start justify-content-between">
+                  <h4 className="subtitle">{awardTitle}</h4>
+                  {awardList.map((val, i) => (
+                    <div className="skill-item text-center" key={i}>
+                      <div className="skill-thumb">
+                        <img src={`${val.imgUrl}`} alt={`${val.imgAlt}`} />
+                      </div>
+                      <p>{val.text}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
-            <div className="instructor-single-bottom d-flex flex-wrap mt-4">
-              <div className="col-xl-6 pb-5 pb-xl-0 d-flex flex-wrap justify-content-lg-start justify-content-between">
-                <h4 className="subtitle">{skillTitle}</h4>
-                {skillList.map((val, i) => (
-                  <div className="text-center skill-item" key={i}>
-                    <div className="skill-thumb">
-                      <Progress strokeWidth={8} percentage={val.percentage} />
-                    </div>
-                    <p>{val.text}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="col-xl-6 d-flex flex-wrap justify-content-lg-start justify-content-between">
-                <h4 className="subtitle">{awardTitle}</h4>
-                {awardList.map((val, i) => (
-                  <div className="skill-item text-center" key={i}>
-                    <div className="skill-thumb">
-                      <img src={`${val.imgUrl}`} alt={`${val.imgAlt}`} />
-                    </div>
-                    <p>{val.text}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          ) : (
+            <p>No author found</p>
+          )}
         </div>
       </section>
       <Footer />
