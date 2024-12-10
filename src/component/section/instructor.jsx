@@ -54,7 +54,7 @@ const Instructor = () => {
                       <img src={`${val.image_url}`} alt={`${val.name}`} />
                     </div>
                     <div className="instructor-content">
-                      <Link to={`/team-single?authorId=${val.id}`}>
+                      <Link to={`/team-single?authorId=${val.author_uid}`}>
                         <h4>{val.name}</h4>
                       </Link>
                       <p>{val.designation}</p>

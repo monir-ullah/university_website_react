@@ -112,10 +112,9 @@ const TeamSingle = () => {
   const location = useLocation(); // Get the current location object
   const params = new URLSearchParams(location.search); // Parse query parameters
 
-  const authorId =
-    typeof params.get("authorId") === "number" ? params.get("authorId") : 4; // Get the 'name' query parameter
+  const authorId = params.get("authorId");
 
-  console.log(authorId);
+  // console.log(authorId);
 
   const [author, setAuthor] = useState(null);
   const [loading, setLoading] = useState(true);
